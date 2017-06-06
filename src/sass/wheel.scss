@@ -1,0 +1,29 @@
+@mixin stretch($position: absolute,$zindex: auto,$top: 0,$right: 0,$bottom: 0,$left: 0){
+	position: $position;
+	top: $top;
+	right: $right;
+	bottom: $bottom;
+	left: $left;
+	z-index: $zindex;
+}
+
+.wheel-container{
+	@include stretch();
+}
+.wheel-section{
+	@include stretch($zindex: 1);
+	visibility: hidden;
+}
+.wheel-rootSection{
+	position: absolute;
+	visibility: hidden;
+}
+
+.active{
+	visibility: visible;
+	z-index: 2;
+}
+.wheel-rootSection[class*="active-s"]{
+	visibility: visible;
+	z-index: 3;
+}

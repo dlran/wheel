@@ -1,0 +1,27 @@
+{
+  "name": "jQuery.wheel",
+  "version": "1.0.0",
+  "description": "Full screen scroll plugin based on jQuery",
+  "main": "index.js",
+  "scripts": {
+    "start": "gulp"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dengliran/wheel.git"
+  },
+  "author": "dengliran",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dengliran/wheel/issues"
+  },
+  "homepage": "https://github.com/dengliran/wheel",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-autoprefixer": "^3.1.1",
+    "gulp-header": "^1.8.8",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^3.1.0",
+    "gulp-uglify": "^2.1.2"
+  }
+}

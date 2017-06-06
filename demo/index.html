@@ -1,0 +1,133 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>jquery-wheel | demo</title>
+	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+	<link rel="stylesheet" type="text/css" href="../dist/css/wheel.css">
+	<style>
+		*{margin: 0;padding: 0;}
+		body{overflow: hidden;}
+		ul{list-style: none;}
+		.photo{
+			height: 100%;
+			background-size: cover;
+			background-position: top center;
+		}
+		.news{
+			position: absolute;
+			width: 100%;
+			bottom: 0;
+			background-color: rgba(0,0,0,.8);
+			padding: 20px 0;
+			color: #b3b3b3;
+			font-size: 14px;
+		}
+		.safetyLine{width: 80%;margin: 0 auto;}
+		
+		.wheel-pagination{
+			position: absolute;
+			top: 50%;
+			right: 10px;
+			transform: translateY(-50%);
+			z-index: 99;
+		}
+		.wheel-pagination a{
+			display: block;
+			width: 6px;
+			height: 6px;
+			border-radius:50%;
+			background-color: #999;
+			margin: 10px auto;
+		}
+		.wheel-pagination a.active{
+			width: 8px;
+			height: 8px;
+			border: 1px solid #a8a8a8;
+			background-color: transparent;
+		}
+
+		@keyframes leave {
+			0% {
+				transform: translate3d(0, 0, 0);
+			}
+			100% {
+				transform: translate3d(0, -100%, 0);
+			}
+		}
+		@keyframes enter {
+			0% {
+				transform: translate3d(0, 100%, 0);
+			}
+			100% {
+				transform: translate3d(0, 0, 0);
+			}
+		}
+		@keyframes back {
+			0% {
+				transform: translate3d(0, -100%, 0);
+			}
+			100% {
+				transform: translate3d(0, 0, 0);
+			}
+		}
+		@keyframes go {
+			0% {
+				transform: translate3d(0, 0, 0);
+			}
+			100% {
+				transform: translate3d(0, 100%, 0);
+			}
+		}
+		.prep.leave{
+			animation: leave .6s;
+			z-index: 2;
+			visibility: visible;
+		}
+		.active.enter{
+			animation: enter .6s;
+		}
+		.active.back{
+			animation: back .6s;
+		}
+		.next.go{
+			animation: go .6s;
+			z-index: 3;
+			visibility: visible;
+		}
+	</style>
+</head>
+<body>
+	<div class="wheel-container">
+		<section class="wheel-section">
+			<div class="photo" style="background-image:url(./images/1.jpg)" ></div>
+			<div class="news">
+				<p class="safetyLine">墨西哥玛雅河，潜水员利用电筒勘探一个水下世界。这些水下洞穴和通道大约40英尺深，几乎是完全黑暗的，只有通过坍塌的洞壁处透进来的一丝光线。洞穴和通道内是矿物质形成的钟乳石，高度超过2米长。摄影师Franco Banfi在4天时间内对这片洞穴进行勘探，每次潜入需要大约2个小时的时间。CFP</p>
+			</div>
+		</section>
+		<section class="wheel-section">
+			<div class="photo" style="background-image:url(./images/2.jpg)" ></div>
+			<div class="news">
+				<p class="safetyLine">云南省怒江傈僳族自治州，一名村民从集镇返回怒江对岸，犹如行走在云端。云南省怒江峡谷壁陡崖悬，壑深万丈，当地居民使用溜索渡江出行。牛榮健/视觉中国</p>
+			</div>
+		</section>
+		<section class="wheel-section">
+			<div class="photo" style="background-image:url(./images/3.jpg)" ></div>
+			<div class="news">
+				<p class="safetyLine">印度尼西亚巴杜珊卡尔庆祝举行传统的Pacu Jawi奔牛比赛，该节日每年在泥泞的稻田中举行，参赛者拽住牛尾巴，赤脚踩在一块木板上，在泥坑中滑行保持平衡，展示牛的力量，众牛拉着参赛者在泥田中飞奔驰骋，溅起的泥浆将他们淹没其中。Mohd Irman Ismail/东方IC</p>
+			</div>
+		</section>
+		<section class="wheel-section">
+			<div class="photo" style="background-image:url(./images/4.jpg)" ></div>
+			<div class="news">
+				<p class="safetyLine">美国纽约，狂欢者跳舞庆祝土著民的节日，促进印第安文化</p>
+			</div>
+		</section>
+	</div>
+	<script type="text/javascript" src="../dist/js/jquery-1.11.3.min.js"></script>
+	<script type="text/javascript" src="../dist/js/jquery-wheel.js"></script>
+	<script type="text/javascript">
+		$('.wheel-container').wheel()
+	</script>
+</body>
+</html>

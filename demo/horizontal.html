@@ -17,18 +17,20 @@
 		
 		.wheel-pagination{
 			position: absolute;
-			top: 50%;
-			right: 10px;
-			transform: translateY(-50%);
+			bottom: 10px;
+			left: 50%;
+			transform: translateX(-50%);
 			z-index: 99;
 		}
+		.wheel-pagination li{display: inline-block;line-height: 8px;}
 		.wheel-pagination a{
-			display: block;
+			display: inline-block;
+			margin: 0 6px;
 			width: 6px;
 			height: 6px;
 			border-radius:50%;
 			background-color: #999;
-			margin: 10px auto;
+			vertical-align: middle;
 		}
 		.wheel-pagination a.active{
 			width: 8px;
@@ -42,12 +44,12 @@
 				transform: translate3d(0, 0, 0);
 			}
 			100% {
-				transform: translate3d(0, -100%, 0);
+				transform: translate3d(-100%, 0, 0);
 			}
 		}
 		@keyframes enter {
 			0% {
-				transform: translate3d(0, 100%, 0);
+				transform: translate3d(100%, 0, 0);
 			}
 			100% {
 				transform: translate3d(0, 0, 0);
@@ -55,7 +57,7 @@
 		}
 		@keyframes back {
 			0% {
-				transform: translate3d(0, -100%, 0);
+				transform: translate3d(-100%, 0, 0);
 			}
 			100% {
 				transform: translate3d(0, 0, 0);
@@ -66,7 +68,7 @@
 				transform: translate3d(0, 0, 0);
 			}
 			100% {
-				transform: translate3d(0, 100%, 0);
+				transform: translate3d(100%, 0, 0);
 			}
 		}
 		.prep.leave{

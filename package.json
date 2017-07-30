@@ -1,10 +1,12 @@
 {
   "name": "jQuery.wheel",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Full screen scroll plugin based on jQuery",
   "main": "index.js",
   "scripts": {
-    "start": "gulp"
+    "clean": "gulp reset",
+    "dev": "gulp",
+    "build": "gulp reset && gulp prod"
   },
   "repository": {
     "type": "git",
@@ -22,6 +24,7 @@
     "gulp-header": "^1.8.8",
     "gulp-rename": "^1.2.2",
     "gulp-sass": "^3.1.0",
+    "gulp-clean": "^0.3.2",
     "gulp-uglify": "^2.1.2"
   }
 }

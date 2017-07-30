@@ -53,3 +53,6 @@ $('.wheel-container').wheel({
 ```
 rootSection元素出现在页面时会添加`active-s + (页码)`类名，利用该类名的页码切换可自定义transition过渡动画，或keyframes帧动画。  
 ![shot](https://raw.githubusercontent.com/dengliran/wheel/master/screenshot/active-s.jpg)
+
+## 禁止滑动状态
+在 .wheel-container 上添加类名 `noSlideUp` `noSlideDown` 分别禁止上下滑动。

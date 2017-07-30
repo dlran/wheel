@@ -1,3 +1,7 @@
+/*!
+ * jQuery.wheel v1.1.0 (https://github.com/dengliran/wheel)
+ * Developed by dengliran in June 2017
+ */
 (function($){
 
 	var defaults = {
@@ -59,6 +63,7 @@
 			$section = $wheel.find(settings.sectionClass),
 			total = $section.length,
 			quiet = false,
+			quietW,
 			paginationList = "",
 			posDelta = null,
 			keepHash,
@@ -118,10 +123,23 @@
 			}
 			if(_hash < 1) 	  _hash = 1;
 			if(_hash > total) _hash = total;
-			var activeIndex = _hash;
+			var _activeIndex = _hash;
 
-			if(_hash === keepHash) return false;
+			if(_hash === keepHash) {
+				return false
+			}else if(_hash > keepHash){
+				posDelta = 1;
+			}else if(_hash < keepHash){
+				posDelta = 0;
+			}
 			keepHash = _hash;
+
+			//href-wheel
+			try{clearTimeout(quietW)}catch(e){};
+			quiet = true;
+			quietW = setTimeout(function(){
+				quiet = false
+			},1000)
 
 			// reset current
 			$(settings.sectionClass + '.prep').removeClass("prep");
@@ -131,15 +149,15 @@
 			$(settings.paginationClass).find("li a" + ".active").removeClass("active");
 
 			// activate new
-			$(settings.sectionClass + "[data-index=" + (activeIndex -1) + "]").addClass("prep");
-			$(settings.sectionClass + "[data-index=" + activeIndex + "]").addClass("active");
-			$(settings.sectionClass + "[data-index=" + (activeIndex + 1) + "]").addClass("next");
+			$(settings.sectionClass + "[data-index=" + (_activeIndex -1) + "]").addClass("prep");
+			$(settings.sectionClass + "[data-index=" + _activeIndex + "]").addClass("active");
+			$(settings.sectionClass + "[data-index=" + (_activeIndex + 1) + "]").addClass("next");
 
-			$(settings.paginationClass).find("li a[data-index=" + activeIndex + "]").addClass("active");
+			$(settings.paginationClass).find("li a[data-index=" + _activeIndex + "]").addClass("active");
 
 			// transform
 			WE.animateSection();
-			WE.transformRootSection(activeIndex);
+			WE.transformRootSection(_activeIndex);
 
 			return this;
 		}
@@ -147,19 +165,12 @@
 		WE._renderPagination = function(){
 			if(!settings.pagination) return;
 
+			// Create pagination
 			$('<ul>' + paginationList + '</ul>').addClass(settings.paginationClass.replace('.','')).prependTo($wheel);
 
-			var _paginationIndex = location.hash.replace('#','')
-
-			$(settings.paginationClass).find("li a").click(function (){
-				var page_index = $(this).data("index");
-				if(page_index > _paginationIndex){
-					posDelta = 1;
-				}else if(page_index < _paginationIndex){
-					posDelta = 0;
-				}
-				_paginationIndex = page_index;
-				location.hash = '#' + page_index;
+			// bind click event
+			$(settings.paginationClass + " li a").click(function (){
+				$wheel.removeClass('noSlideUp noSlideDown');
 			});
 
 			return this

@@ -4,6 +4,7 @@ var gulp = require('gulp'),
 	rename = require('gulp-rename'),
 	uglify = require('gulp-uglify'),
 	header = require('gulp-header'),
+	clean = require('gulp-clean'),
 	pkg = require('./package.json');
 
 var banner = ['/*!',
@@ -22,7 +23,7 @@ gulp.task('css',function (){
 })
 
 gulp.task('js',function (){
-	return gulp.src('./src/js/jquery-wheel.js')
+	return gulp.src('./src/js/jquery-wheel-*.js')
 		.pipe(header(banner,{pkg:pkg}))
 		.pipe(gulp.dest('./dist/js'))
 		.pipe(uglify({output:{comments:"/^!/"}}).on('error',function (e){
@@ -39,11 +40,18 @@ gulp.task('assets',function(){
 				.pipe(gulp.dest('./dist/js'))
 })
 
+gulp.task('reset',function (){
+	gulp.src('./dist/*',{read: false})
+		.pipe(clean());
+})
+
 gulp.task('release',function (){
 	return gulp.start('assets','js','css')
 })
 
+gulp.task('prod',['release'])
+
 gulp.task('default',['release'],function(){
 	gulp.watch('src/sass/**/*',['css']);
-	gulp.watch('src/js/jquery-wheel.js',['js']);
+	gulp.watch('src/js/jquery-wheel-*.js',['js']);
 })

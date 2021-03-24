@@ -10,7 +10,6 @@
     paginate: true,
     section: [],
     sectionClass: '.wheel-section',
-    rootSectionClass: '.wheel-rootSection',
     paginationClass: '.wheel-pagination',
     pagination: ''
   };
@@ -21,11 +20,10 @@
       : new Wheel(element, opts);
   }
 
-  Wheel.prototype.init = function init(element, opts) {
+  Wheel.prototype.init = function (element, opts) {
     if (typeof element !== 'string') {
       element = undefined;
     }
-    // $wheel = this
     if (element) {
       Settings['container'] = document.querySelector(element);
     } else if (!Settings['container'] && Settings['containerClass']) {
@@ -34,19 +32,19 @@
     Settings['section'] = Settings.container.querySelectorAll(Settings.sectionClass),
     this.paginationList = '';
     this.keepHash = '';
-    this.quietW = '';
-    this.quiet = false;
+    this.lockW = '';
+    this.lock = false;
     this.posDelta = null;
-    this._bindEvent()
-        ._initSection()
-        ._renderPagination()
-        ._render();
+    this.bindEvent()
+        .initSection()
+        .renderPagination()
+        .render();
   };
 
-  Wheel.prototype._bindEvent = function() {
+  Wheel.prototype.bindEvent = function() {
     var this$1 = this;
 
-    window.onhashchange = function () { return this$1._render(); };
+    window.onhashchange = function () { return this$1.render(); };
 
     var support = 'onwheel' in document.createElement('div') ? 'wheel' :
       document.onmousewheel !== undefined ? 'mousewheel' : 'DOMMouseScroll';
@@ -60,39 +58,29 @@
       this$1._wheelHolder(event, delta);
     });
 
-    //Touch
-    // $wheel.swipeEvents().on("swipeUp",function(){
-    //     WE.slideDown();
-    //     posDelta = 1;
-    // }).on("swipeDown",function(){
-    //     WE.slideUp();
-    //     posDelta = 0;
-    // });
-
-    return this;
+    return this
   };
 
   Wheel.prototype._wheelHolder = function(event, delta) {
     var this$1 = this;
 
-    console.log(delta);
-    if (this.quiet == false) {
-        if (delta == 0 || Math.abs(delta) < 100) { return }
-        if (delta > 0 && !Settings.container.className.indexOf('noSlideDown') > -1) {
-            this.slideDown();
-            this.posDelta = 1;
-        } else if (delta < 0 && !Settings.container.className.indexOf('noSlideUp') > -1) {
-            this.slideUp();
-            this.posDelta = 0;
-        }
-        this.quiet = true;
-        setTimeout(function () {
-            this$1.quiet = false;
-        }, 1000);
+    if (!this.lock) {
+      if (delta == 0 || Math.abs(delta) < 100) { return }
+      if (delta > 0 && !Settings.container.className.indexOf('noSlideDown') > -1) {
+        this.slide(1);
+        this.posDelta = 1;
+      } else if (delta < 0 && !Settings.container.className.indexOf('noSlideUp') > -1) {
+        this.slide(-1);
+        this.posDelta = 0;
+      }
+      this.lock = true;
+      setTimeout(function () {
+        this$1.lock = false;
+      }, 800);
     }
   };
 
-  Wheel.prototype._render = function() {
+  Wheel.prototype.render = function() {
     var this$1 = this;
 
     var _hash = Math.floor(Number(location.hash.split(/#/)[1]));
@@ -110,22 +98,21 @@
 
     if (_hash === this.keepHash) {
       return false
-    } else if (_hash > this.keepHash) {
+    } else if (this.keepHash && _hash > this.keepHash) {
       this.posDelta = 1;
-    } else if (_hash < this.keepHash) {
+    } else if (this.keepHash && _hash < this.keepHash) {
       this.posDelta = 0;
     }
     this.keepHash = _hash;
 
-    //href-wheel
-    try{ clearTimeout(this.quietW); }catch(e){}
-    this.quiet = true;
-    this.quietW = setTimeout(function () {
-      this$1.quiet = false;
-    }, 1000);
+    // href hash wheel
+    try { clearTimeout(this.lockW); } catch(e) {}
+    this.lock = true;
+    this.lockW = setTimeout(function () {
+      this$1.lock = false;
+    }, 800);
 
     Settings.section.forEach(function (v) {
-      // reset current
       v.classList.remove('prep');
       v.classList.remove('active');
       v.classList.remove('next');
@@ -143,115 +130,59 @@
     var actPagin = Settings.pagination.querySelector('li a.active');
     actPagin && actPagin.classList.remove('active');
 
-    // activate new
-    // Settings.container.querySelector(`[data-index="${_activeIndex - 1}"]`).classList.add('prep')
-    // Settings.container.querySelector(`[data-index="${_activeIndex}"]`).classList.add('active')
-    // Settings.container.querySelector(`[data-index="${_activeIndex} + 1"]`).classList.add('next')
-
     Settings.pagination.querySelector('li a[data-index="' + _activeIndex + '"]').classList.add('active');
 
-    // transform
     this.animateSection();
-    // WE.transformRootSection(_activeIndex);
 
     return this
   };
 
-  Wheel.prototype.slideDown = function() {
+  Wheel.prototype.slide = function (type) {
     var _index;
     Settings.section.forEach(function (v) {
       if (v.className.indexOf('active') > -1) {
         _index = parseInt(v.getAttribute('data-index'));
       }
     });
-      if (_index < Settings.section.length) { location.hash = '#'+ (_index + 1); }
+    if ((_index <= Settings.section.length && _index > 1 && type === -1)
+      || (_index < Settings.section.length && type === 1)) {
+      location.hash = '#'+ (_index + type);
+    }
 
-      return this
+    return this
   };
 
-  Wheel.prototype.slideUp = function() {
-    var _index;
-    Settings.section.forEach(function (v) {
-      if (v.className.indexOf('active') > -1) {
-        _index = parseInt(v.getAttribute('data-index'));
-      }
-    });
-    if (_index <= Settings.section.length && _index > 1) { location.hash = '#'+ (_index - 1); }
-
-      return this
-  };
-
-  Wheel.prototype.swipeEvents = function() {
-      return this.each(function() {
-
-          var startX,
-              startY,
-              $this = $(this);
-
-          $this.bind('touchstart', touchstart);
-
-          function touchstart(event) {
-              var touches = event.originalEvent.touches;
-              if (touches && touches.length) {
-                  startX = touches[0].pageX;
-                  startY = touches[0].pageY;
-                  $this.bind('touchmove', touchmove);
-              }
-          }
-
-          function touchmove(event) {
-              var touches = event.originalEvent.touches;
-              if (touches && touches.length) {
-                  var deltaX = startX - touches[0].pageX;
-                  var deltaY = startY - touches[0].pageY;
-
-                  if (deltaX >= 50) {
-                      $this.trigger("swipeLeft");
-                  }
-                  if (deltaX <= -50) {
-                      $this.trigger("swipeRight");
-                  }
-                  if (deltaY >= 50) {
-                      $this.trigger("swipeUp");
-                  }
-                  if (deltaY <= -50) {
-                      $this.trigger("swipeDown");
-                  }
-                  if (Math.abs(deltaX) >= 50 || Math.abs(deltaY) >= 50) {
-                      $this.unbind('touchmove', touchmove);
-                  }
-              }
-              event.preventDefault();
-          }
-
-      });
-  };
-
-  Wheel.prototype.animateSection = function() {
+  Wheel.prototype.animateSection = function () {
     var this$1 = this;
 
     Settings.section.forEach(function (v) {
       if (this$1.posDelta === 1 && v.className.indexOf('prep') > -1) {
         v.classList.add('leave');
-        v.addEventListener('animationend', function (event) { // webkitAnimationEnd
+        var _event = function (event) {
           v.classList.remove('leave');
-        });
-      } else if (v.className.indexOf('active') > -1) {
+          v.removeEventListener('animationend', _event);
+        };
+        v.addEventListener('animationend', _event);
+      } else if (this$1.posDelta !== null && v.className.indexOf('active') > -1) {
         v.classList.add(this$1.posDelta ? 'enter' : 'back');
-        v.addEventListener('animationend', function (event) {
+        var _event$1 = function (event) {
           v.classList.remove(this$1.posDelta ? 'enter' : 'back');
-        });
+          v.removeEventListener('animationend', _event$1);
+        };
+        v.addEventListener('animationend', _event$1);
       } else if (this$1.posDelta === 0 && v.className.indexOf('next') > -1) {
         v.classList.add('go');
-        v.addEventListener('animationend', function (event) {
+        var _event$2 = function (event) {
           v.classList.remove('go');
-        });
+          v.removeEventListener('animationend', _event$2);
+        };
+        v.addEventListener('animationend', _event$2);
       }
     });
     return this
   };
 
-  Wheel.prototype._initSection = function(){
+  Wheel.prototype.initSection = function(){
     var this$1 = this;
 
     Settings.section.forEach(function (v, i) {
@@ -263,7 +194,7 @@
     return this
   };
 
-  Wheel.prototype._renderPagination = function(){
+  Wheel.prototype.renderPagination = function(){
 
     var $ul = document.createElement('ul');
     $ul.innerHTML = this.paginationList;
@@ -280,19 +211,6 @@
     });
     return this
   };
-  // WE.transformRootSection = function(index){
-  //     $(settings.rootSectionClass).each(function(){
-  //         var self = this,
-  //             rsArray = $(this).data('index');
-  //         $.each(rsArray,function(k,v){
-  //             $(self).removeClass('active-s'+v);
-  //             if(v === index){
-  //                 $(self).addClass('active-s'+v)
-  //             }
-  //         })
-  //     })
-  //     return this;
-  // }
 
   return Wheel;
 

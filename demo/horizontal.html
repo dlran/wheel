@@ -1,116 +1,93 @@
 <!doctype html>
 <html>
 <head>
-	<meta charset="UTF-8">
-	<title>jquery-wheel | demo</title>
-	<meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
-	<link rel="stylesheet" type="text/css" href="../dist/css/wheel.css">
-	<style>
-		*{margin: 0;padding: 0;}
-		body{overflow: hidden;}
-		ul{list-style: none;}
-		.photo{
-			height: 100%;
-			background-size: cover;
-			background-position: top center;
-		}
-		
-		.wheel-pagination{
-			position: absolute;
-			bottom: 10px;
-			left: 50%;
-			transform: translateX(-50%);
-			z-index: 99;
-		}
-		.wheel-pagination li{display: inline-block;line-height: 8px;}
-		.wheel-pagination a{
-			display: inline-block;
-			margin: 0 6px;
-			width: 6px;
-			height: 6px;
-			border-radius:50%;
-			background-color: #999;
-			vertical-align: middle;
-		}
-		.wheel-pagination a.active{
-			width: 8px;
-			height: 8px;
-			border: 1px solid #a8a8a8;
-			background-color: transparent;
-		}
+  <meta charset="UTF-8">
+  <title>demo</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no">
+  <link rel="stylesheet" type="text/css" href="../dist/wheel.min.css">
+  <style>
+    *{margin: 0;padding: 0;}
+    body{overflow: hidden;}
+    ul{list-style: none;}
+    .photo{
+      height: 100%;
+      background-size: cover;
+      background-position: top center;
+    }
+    
+    .wheel-pagination {
+      position: absolute;
+      top: auto;
+      right: auto;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 99;
+    }
+    .wheel-pagination li {
+      display: inline-block;line-height: 8px;
+    }
+    .wheel-pagination a {
+      display: inline-block;
+      margin: 0 6px;
+      vertical-align: middle;
+    }
 
-		@keyframes leave {
-			0% {
-				transform: translate3d(0, 0, 0);
-			}
-			100% {
-				transform: translate3d(-100%, 0, 0);
-			}
-		}
-		@keyframes enter {
-			0% {
-				transform: translate3d(100%, 0, 0);
-			}
-			100% {
-				transform: translate3d(0, 0, 0);
-			}
-		}
-		@keyframes back {
-			0% {
-				transform: translate3d(-100%, 0, 0);
-			}
-			100% {
-				transform: translate3d(0, 0, 0);
-			}
-		}
-		@keyframes go {
-			0% {
-				transform: translate3d(0, 0, 0);
-			}
-			100% {
-				transform: translate3d(100%, 0, 0);
-			}
-		}
-		.prep.leave{
-			animation: leave .6s;
-			z-index: 2;
-			visibility: visible;
-		}
-		.active.enter{
-			animation: enter .6s;
-		}
-		.active.back{
-			animation: back .6s;
-		}
-		.next.go{
-			animation: go .6s;
-			z-index: 3;
-			visibility: visible;
-		}
-	</style>
+    @keyframes leave {
+      0% {
+        transform: translate3d(0, 0, 0);
+      }
+      100% {
+        transform: translate3d(-100%, 0, 0);
+      }
+    }
+    @keyframes enter {
+      0% {
+        transform: translate3d(100%, 0, 0);
+      }
+      100% {
+        transform: translate3d(0, 0, 0);
+      }
+    }
+    @keyframes back {
+      0% {
+        transform: translate3d(-100%, 0, 0);
+      }
+      100% {
+        transform: translate3d(0, 0, 0);
+      }
+    }
+    @keyframes go {
+      0% {
+        transform: translate3d(0, 0, 0);
+      }
+      100% {
+        transform: translate3d(100%, 0, 0);
+      }
+    }
+  </style>
 </head>
 <body>
-	<div class="wheel-container">
-		<section class="wheel-section">
-			<div class="photo" style="background-image:url(./images/photo-1473800447596-01729482b8eb.jpg)" ></div>
-		</section>
-		<section class="wheel-section">
-			<div class="photo" style="background-image:url(./images/photo-1478028928718-7bfdb1b32095.jpg)" ></div>
-		</section>
-		<section class="wheel-section">
-			<div class="photo" style="background-image:url(./images/photo-1483068612337-c045daaca40e.jpg)" ></div>
-		</section>
-		<section class="wheel-section">
-			<div class="photo" style="background-image:url(./images/photo-1493246507139-91e8fad9978e.jpg)" ></div>
-		</section>
-		<section class="wheel-section">
-			<div class="photo" style="background-image:url(./images/photo-1495114439165-3fc880396f37.jpg)" ></div>
-		</section>
-	</div>
-	<script type="text/javascript" src="../dist/js/jquery-1.11.3.min.js"></script>
-	<script type="text/javascript" src="../dist/js/jquery-wheel-1.1.0.js"></script>
-	<script type="text/javascript">
-		$('.wheel-container').wheel()
-	</script>
+  <div class="wheel-container">
+    <section class="wheel-section">
+      <div class="photo" style="background-image:url(./images/photo-1473800447596-01729482b8eb.jpg)" ></div>
+    </section>
+    <section class="wheel-section">
+      <div class="photo" style="background-image:url(./images/photo-1478028928718-7bfdb1b32095.jpg)" ></div>
+    </section>
+    <section class="wheel-section">
+      <div class="photo" style="background-image:url(./images/photo-1483068612337-c045daaca40e.jpg)" ></div>
+    </section>
+    <section class="wheel-section">
+      <div class="photo" style="background-image:url(./images/photo-1493246507139-91e8fad9978e.jpg)" ></div>
+    </section>
+    <section class="wheel-section">
+      <div class="photo" style="background-image:url(./images/photo-1495114439165-3fc880396f37.jpg)" ></div>
+    </section>
+  </div>
+  <script type="text/javascript" src="../dist/wheel.min.js"></script>
+  <script type="text/javascript">
+    wheel('.wheel-container')
+  </script>
 </body>
 </html>

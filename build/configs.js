@@ -24,8 +24,8 @@ const JSOptions = {
 }
 
 const CSSOptions = {
-  input: path.resolve(__dirname, '../src/theme/index.scss'),
-  output: path.resolve(__dirname, '../release/cdm-ui.css')
+  input: path.resolve(__dirname, '../src/style.scss'),
+  output: path.resolve(__dirname, '../dist/wheel.min.css')
 }
 
 function genConfig (opt) {
@@ -50,5 +50,5 @@ function mapOpts (opts, fn) {
 
 module.exports = {
   js: mapOpts(JSOptions, genConfig),
-  // css: CSSOptions
+  css: CSSOptions
 }

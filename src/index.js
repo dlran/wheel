@@ -4,7 +4,6 @@ let Settings = {
   paginate: true,
   section: [],
   sectionClass: '.wheel-section',
-  rootSectionClass: '.wheel-rootSection',
   paginationClass: '.wheel-pagination',
   pagination: ''
 }
@@ -15,12 +14,11 @@ function Wheel(element, opts) {
     : new Wheel(element, opts);
 }
 
-Wheel.prototype.init = function init(element, opts) {
+Wheel.prototype.init = function (element, opts) {
   if (typeof element !== 'string') {
     opts = element
     element = undefined
   }
-  // $wheel = this
   if (element) {
     Settings['container'] = document.querySelector(element)
   } else if (!Settings['container'] && Settings['containerClass']) {
@@ -29,17 +27,17 @@ Wheel.prototype.init = function init(element, opts) {
   Settings['section'] = Settings.container.querySelectorAll(Settings.sectionClass),
   this.paginationList = ''
   this.keepHash = ''
-  this.quietW = ''
-  this.quiet = false
+  this.lockW = ''
+  this.lock = false
   this.posDelta = null
-  this._bindEvent()
-      ._initSection()
-      ._renderPagination()
-      ._render()
+  this.bindEvent()
+      .initSection()
+      .renderPagination()
+      .render()
 }
 
-Wheel.prototype._bindEvent = function() {
-  window.onhashchange = () => this._render()
+Wheel.prototype.bindEvent = function() {
+  window.onhashchange = () => this.render()
 
   let support = 'onwheel' in document.createElement('div') ? 'wheel' :
     document.onmousewheel !== undefined ? 'mousewheel' : 'DOMMouseScroll'
@@ -53,36 +51,27 @@ Wheel.prototype._bindEvent = function() {
     this._wheelHolder(event, delta)
   })
 
-  //Touch
-  // $wheel.swipeEvents().on("swipeUp",function(){
-  //     WE.slideDown();
-  //     posDelta = 1;
-  // }).on("swipeDown",function(){
-  //     WE.slideUp();
-  //     posDelta = 0;
-  // });
-
-  return this;
+  return this
 }
 
 Wheel.prototype._wheelHolder = function(event, delta) {
-  if (this.quiet == false) {
-      if (delta == 0 || Math.abs(delta) < 100) return
-      if (delta > 0 && !Settings.container.className.indexOf('noSlideDown') > -1) {
-          this.slideDown()
-          this.posDelta = 1
-      } else if (delta < 0 && !Settings.container.className.indexOf('noSlideUp') > -1) {
-          this.slideUp()
-          this.posDelta = 0
-      }
-      this.quiet = true
-      setTimeout(() => {
-          this.quiet = false
-      }, 1000)
+  if (!this.lock) {
+    if (delta == 0 || Math.abs(delta) < 100) { return }
+    if (delta > 0 && !Settings.container.className.indexOf('noSlideDown') > -1) {
+      this.slide(1)
+      this.posDelta = 1
+    } else if (delta < 0 && !Settings.container.className.indexOf('noSlideUp') > -1) {
+      this.slide(-1)
+      this.posDelta = 0
+    }
+    this.lock = true
+    setTimeout(() => {
+      this.lock = false
+    }, 800)
   }
 }
 
-Wheel.prototype._render = function() {
+Wheel.prototype.render = function() {
   let _hash = Math.floor(Number(location.hash.split(/#/)[1]))
   let max_len = Settings.section.length
   if (!_hash) {
@@ -98,22 +87,21 @@ Wheel.prototype._render = function() {
 
   if (_hash === this.keepHash) {
     return false
-  } else if (_hash > this.keepHash) {
+  } else if (this.keepHash && _hash > this.keepHash) {
     this.posDelta = 1
-  } else if (_hash < this.keepHash) {
+  } else if (this.keepHash && _hash < this.keepHash) {
     this.posDelta = 0
   }
   this.keepHash = _hash
 
-  //href-wheel
-  try{ clearTimeout(this.quietW) }catch(e){}
-  this.quiet = true
-  this.quietW = setTimeout(() => {
-    this.quiet = false
-  }, 1000)
+  // href hash wheel
+  try { clearTimeout(this.lockW) } catch(e) {}
+  this.lock = true
+  this.lockW = setTimeout(() => {
+    this.lock = false
+  }, 800)
 
   Settings.section.forEach(v => {
-    // reset current
     v.classList.remove('prep')
     v.classList.remove('active')
     v.classList.remove('next')
@@ -131,113 +119,57 @@ Wheel.prototype._render = function() {
   let actPagin = Settings.pagination.querySelector('li a.active')
   actPagin && actPagin.classList.remove('active')
 
-  // activate new
-  // Settings.container.querySelector(`[data-index="${_activeIndex - 1}"]`).classList.add('prep')
-  // Settings.container.querySelector(`[data-index="${_activeIndex}"]`).classList.add('active')
-  // Settings.container.querySelector(`[data-index="${_activeIndex} + 1"]`).classList.add('next')
-
   Settings.pagination.querySelector('li a[data-index="' + _activeIndex + '"]').classList.add('active')
 
-  // transform
   this.animateSection()
-  // WE.transformRootSection(_activeIndex);
 
   return this
 }
 
-Wheel.prototype.slideDown = function() {
-  var _index
+Wheel.prototype.slide = function (type) {
+  let _index
   Settings.section.forEach(v => {
     if (v.className.indexOf('active') > -1) {
       _index = parseInt(v.getAttribute('data-index'))
     }
   })
-    if (_index < Settings.section.length) location.hash = '#'+ (_index + 1);
+  if ((_index <= Settings.section.length && _index > 1 && type === -1)
+    || (_index < Settings.section.length && type === 1)) {
+    location.hash = '#'+ (_index + type)
+  }
 
-    return this
+  return this
 }
 
-Wheel.prototype.slideUp = function() {
-  var _index
-  Settings.section.forEach(v => {
-    if (v.className.indexOf('active') > -1) {
-      _index = parseInt(v.getAttribute('data-index'))
-    }
-  })
-  if (_index <= Settings.section.length && _index > 1) location.hash = '#'+ (_index - 1)
-
-    return this
-}
-
-Wheel.prototype.swipeEvents = function() {
-    return this.each(function() {
-
-        var startX,
-            startY,
-            $this = $(this);
-
-        $this.bind('touchstart', touchstart);
-
-        function touchstart(event) {
-            var touches = event.originalEvent.touches;
-            if (touches && touches.length) {
-                startX = touches[0].pageX;
-                startY = touches[0].pageY;
-                $this.bind('touchmove', touchmove);
-            }
-        }
-
-        function touchmove(event) {
-            var touches = event.originalEvent.touches;
-            if (touches && touches.length) {
-                var deltaX = startX - touches[0].pageX;
-                var deltaY = startY - touches[0].pageY;
-
-                if (deltaX >= 50) {
-                    $this.trigger("swipeLeft");
-                }
-                if (deltaX <= -50) {
-                    $this.trigger("swipeRight");
-                }
-                if (deltaY >= 50) {
-                    $this.trigger("swipeUp");
-                }
-                if (deltaY <= -50) {
-                    $this.trigger("swipeDown");
-                }
-                if (Math.abs(deltaX) >= 50 || Math.abs(deltaY) >= 50) {
-                    $this.unbind('touchmove', touchmove);
-                }
-            }
-            event.preventDefault();
-        }
-
-    });
-};
-
-Wheel.prototype.animateSection = function() {
+Wheel.prototype.animateSection = function () {
   Settings.section.forEach(v => {
     if (this.posDelta === 1 && v.className.indexOf('prep') > -1) {
       v.classList.add('leave')
-      v.addEventListener('animationend', (event) => { // webkitAnimationEnd
+      let _event = (event) => {
         v.classList.remove('leave')
-      })
-    } else if (v.className.indexOf('active') > -1) {
+        v.removeEventListener('animationend', _event)
+      }
+      v.addEventListener('animationend', _event)
+    } else if (this.posDelta !== null && v.className.indexOf('active') > -1) {
       v.classList.add(this.posDelta ? 'enter' : 'back')
-      v.addEventListener('animationend', (event) => {
+      let _event = (event) => {
         v.classList.remove(this.posDelta ? 'enter' : 'back')
-      })
+        v.removeEventListener('animationend', _event)
+      }
+      v.addEventListener('animationend', _event)
     } else if (this.posDelta === 0 && v.className.indexOf('next') > -1) {
       v.classList.add('go')
-      v.addEventListener('animationend', (event) => {
+      let _event = (event) => {
         v.classList.remove('go')
-      })
+        v.removeEventListener('animationend', _event)
+      }
+      v.addEventListener('animationend', _event)
     }
   })
   return this
 }
 
-Wheel.prototype._initSection = function(){
+Wheel.prototype.initSection = function(){
   Settings.section.forEach((v, i) => {
     v.setAttribute('data-index', i + 1)
     if (Settings.paginate) {
@@ -247,7 +179,7 @@ Wheel.prototype._initSection = function(){
   return this
 }
 
-Wheel.prototype._renderPagination = function(){
+Wheel.prototype.renderPagination = function(){
   if(!Settings.paginate) return
 
   let $ul = document.createElement('ul')
@@ -267,16 +199,4 @@ Wheel.prototype._renderPagination = function(){
 }
 
 export default Wheel
-// WE.transformRootSection = function(index){
-//     $(settings.rootSectionClass).each(function(){
-//         var self = this,
-//             rsArray = $(this).data('index');
-//         $.each(rsArray,function(k,v){
-//             $(self).removeClass('active-s'+v);
-//             if(v === index){
-//                 $(self).addClass('active-s'+v)
-//             }
-//         })
-//     })
-//     return this;
-// }
+

@@ -6,16 +6,20 @@
   "scripts": {},
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dengliran/wheel.git"
+    "url": "git+https://github.com/dlran/wheel.git"
   },
-  "author": "dengliran",
+  "author": "ran",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/dengliran/wheel/issues"
+    "url": "https://github.com/dlran/wheel/issues"
   },
-  "homepage": "https://github.com/dengliran/wheel",
+  "homepage": "https://github.com/dlran/wheel",
   "devDependencies": {
     "@rollup/plugin-buble": "^0.21.3",
+    "autoprefixer": "^10.2.5",
+    "clean-css": "^5.1.2",
+    "node-sass": "^5.0.0",
+    "postcss": "^8.2.8",
     "rimraf": "^3.0.2",
     "rollup": "^2.15.0",
     "rollup-plugin-uglify": "^6.0.4",

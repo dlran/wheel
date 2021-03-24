@@ -1,0 +1,94 @@
+@mixin stretch($position: absolute,$zindex: auto,$top: 0,$right: 0,$bottom: 0,$left: 0){
+  position: $position;
+  top: $top;
+  right: $right;
+  bottom: $bottom;
+  left: $left;
+  z-index: $zindex;
+}
+
+.wheel-container {
+  @include stretch();
+}
+
+.wheel-section {
+  @include stretch($zindex: 1);
+  visibility: hidden;
+  &.active {
+    visibility: visible;
+    z-index: 2;
+  }
+}
+
+.wheel-pagination {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  z-index: 99;
+}
+.wheel-pagination a{
+  display: block;
+  width: 6px;
+  height: 6px;
+  border-radius:50%;
+  background-color: #999;
+  margin: 10px auto;
+}
+.wheel-pagination a.active{
+  width: 8px;
+  height: 8px;
+  border: 1px solid #a8a8a8;
+  background-color: transparent;
+}
+
+@keyframes leave {
+  0% {
+  transform: translate3d(0, 0, 0);
+  }
+  100% {
+  transform: translate3d(0, -100%, 0);
+  }
+}
+@keyframes enter {
+  0% {
+  transform: translate3d(0, 100%, 0);
+  }
+  100% {
+  transform: translate3d(0, 0, 0);
+  }
+}
+@keyframes back {
+  0% {
+  transform: translate3d(0, -100%, 0);
+  }
+  100% {
+  transform: translate3d(0, 0, 0);
+  }
+}
+@keyframes go {
+  0% {
+  transform: translate3d(0, 0, 0);
+  }
+  100% {
+  transform: translate3d(0, 100%, 0);
+  }
+}
+.wheel-section {
+  &.prep.leave{
+    animation: leave .6s;
+    z-index: 2;
+    visibility: visible;
+  }
+  &.active.enter{
+    animation: enter .6s;
+  }
+  &.active.back{
+    animation: back .6s;
+  }
+  &.next.go{
+    animation: go .6s;
+    z-index: 3;
+    visibility: visible;
+  }
+}
